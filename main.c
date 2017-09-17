@@ -19,7 +19,7 @@
     The generated drivers are tested against the following:
         Compiler          :  XC8 1.35
         MPLAB             :  MPLAB X 3.40
-*/
+ */
 
 /*
     (c) 2016 Microchip Technology Inc. and its subsidiaries. You may use this
@@ -41,61 +41,64 @@
 
     MICROCHIP PROVIDES THIS SOFTWARE CONDITIONALLY UPON YOUR ACCEPTANCE OF THESE
     TERMS.
-*/
+ */
 
 #include "mcc_generated_files/mcc.h"
 
-// responses to parse
-const BT_CMD  = 1;
-const BT_AOK  = 2;
-const BT_CONN = 3;
-const BT_END  = 4;
+#include "BT.h"
 
 /*
                          Main application
  */
-void main(void)
+void main (void)
 {
-    // initialize the device
-    SYSTEM_Initialize();
+   // initialize the device
+   SYSTEM_Initialize ();
 
-    // When using interrupts, you need to set the Global and Peripheral Interrupt Enable bits
-    // Use the following macros to:
+   // When using interrupts, you need to set the Global and Peripheral Interrupt Enable bits
+   // Use the following macros to:
 
-    // Enable the Global Interrupts
-    INTERRUPT_GlobalInterruptEnable();
+   // Enable the Global Interrupts
+   INTERRUPT_GlobalInterruptEnable ();
 
-    // Enable the Peripheral Interrupts
-    INTERRUPT_PeripheralInterruptEnable();
+   // Enable the Peripheral Interrupts
+   INTERRUPT_PeripheralInterruptEnable ();
 
-    // Disable the Global Interrupts
-    //INTERRUPT_GlobalInterruptDisable();
+   // Disable the Global Interrupts
+   //INTERRUPT_GlobalInterruptDisable();
 
-    // Disable the Peripheral Interrupts
-    //INTERRUPT_PeripheralInterruptDisable();
+   // Disable the Peripheral Interrupts
+   //INTERRUPT_PeripheralInterruptDisable();
 
-    printf ("EQ-DK Bluetooth test\r");
-    printf ("(c) DKSS 2017\r");
-    
-    EUSART1_Write_Text ("Test of pointer stuff\r");
-    
-    // Configure BlueTooth-Click module
-    BT_Configure();
-  
-    // EUSART1 is the debugging
-    // EUSART2 is the RN41 bluetooth module
+   printf ("EQ-DK Bluetooth test\r");
+   printf ("(c) DKSS 2017\r");
 
-    //  Wait until connected
-    while (BT_Get_Response() != BT_CONN)
-    {
-       ;
-    }
-    
-    while (1)
-    {
-        // Add your application code
-    }
+   EUSART1_Write_Text ("Test of pointer stuff\r");
+
+   // Configure BlueTooth-Click module
+   BT_Configure ();
+
+   // EUSART1 is the debugging
+   // EUSART2 is the RN41 bluetooth module
+
+   //  Wait until connected
+   while (BT_Get_Response () != BT_CONN)
+   {
+      ;
+   }
+
+   while (1)
+   {
+      // Add your application code
+
+      if (eusart2RxCount > 0)
+      {
+         uint8_t ch = EUSART2_Read ();
+
+         BT_Process (ch);
+      }
+   }
 }
 /**
  End of File
-*/
+ */
